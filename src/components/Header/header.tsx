@@ -1,16 +1,18 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 import { StyledHeader, StyledImg, StyledLogo } from "./header.styled";
 import logo from "./../../assets/spacex-logo.png";
-import { Button } from "..";
+import { Button, LaunchesContext } from "..";
 
 export function Header(): ReactElement {
+  const { refreshData } = useContext(LaunchesContext);
+
   return (
     <StyledHeader>
       <StyledLogo>
         <StyledImg src={logo} alt="SapceX" />
         <span>Launches</span>
       </StyledLogo>
-      <Button onClick={(e) => console.log(e)} isLeftRound>
+      <Button onClick={() => (refreshData ? refreshData() : null)} isLeftRound>
         Reload Data
         <Icon />
       </Button>

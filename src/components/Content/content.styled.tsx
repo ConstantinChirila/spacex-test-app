@@ -7,5 +7,7 @@ export const StyledContent = styled.main`
 `;
 export const StyledImage = styled.img`
   width: 40%;
+  height: auto;
+  flex-shrink: 1;
   margin: 5rem 5rem 5rem 0rem;
 `;

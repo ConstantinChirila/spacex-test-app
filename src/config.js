@@ -1,3 +1,3 @@
 export const config = {
-  SOCKET_URL: `https://videostream-app.herokuapp.com/`,
+  API: `https://api.spacexdata.com/v3/launches`,
 };
