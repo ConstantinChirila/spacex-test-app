@@ -9,10 +9,7 @@ import { LaunchList } from "..";
 export function Content() {
   return (
     <StyledContent>
-      <StyledImage
-        src={MainImg}
-        srcSet={`${MainImg2x} 2x, ${MainImg3x} 3x`}
-      ></StyledImage>
+      <StyledImage src={MainImg} srcSet={`${MainImg2x} 2x, ${MainImg3x} 3x`} />
       <LaunchList />
     </StyledContent>
   );

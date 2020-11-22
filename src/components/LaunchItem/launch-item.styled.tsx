@@ -15,6 +15,7 @@ export const StyledPosition = styled.div`
   font-weight: 500;
   margin-right: 3rem;
   letter-spacing: -0.5rem;
+  min-width: 7rem;
 `;
 
 export const StyledTitle = styled.h1`
@@ -26,6 +27,7 @@ export const StyledTitle = styled.h1`
 export const StyledDetails = styled.div`
   font-size: 3.2rem;
   text-align: right;
+  margin-left: 2rem;
 `;
 
 export const StyledDate = styled.div`

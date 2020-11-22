@@ -9,15 +9,18 @@ export type TLaunchState = {
 
 export type TLaunch = {
   flightNumber: number;
-  dateUnix: number;
+  date: number;
   launchYear: number;
   missionName: string;
   rocketName: string;
 };
 
+type TSort = "asc" | "desc";
+
 export type TContextState = {
   launches: TLaunchState;
   refreshData?: () => Promise<void>;
+  sorting: { set?: (type: TSort) => void; type: TSort };
 };
 
 export const LaunchesContext = createContext<TContextState>({
@@ -26,6 +29,9 @@ export const LaunchesContext = createContext<TContextState>({
     data: [],
   },
   refreshData: async () => {},
+  sorting: {
+    type: "asc",
+  },
 });
 
 export function App() {
@@ -34,25 +40,34 @@ export function App() {
     data: [],
   });
 
+  const [sortByDate, setSortByDate] = useState<TSort>("asc");
+
   useEffect(() => {
     getData();
   }, []);
 
-  async function getData() {
-    const response = await fetch(config.API);
+  useEffect(() => {
+    getData(sortByDate);
+  }, [sortByDate]);
+
+  async function getData(sort = "asc") {
+    setLaunches({
+      isLoading: true,
+      data: [],
+    });
+    const response = await fetch(config.API + "/?order=" + sort);
     const data = await response.json();
     console.log(data);
-
     const mappedData = data.map(
       ({
         flight_number,
-        launch_date_unix,
+        launch_date_utc,
         launch_year,
         mission_name,
         rocket,
       }: any) => ({
         flightNumber: flight_number,
-        dateUnix: launch_date_unix,
+        date: launch_date_utc,
         launchYear: launch_year,
         missionName: mission_name,
         rocketName: rocket.rocket_name,
@@ -70,6 +85,10 @@ export function App() {
       value={{
         launches,
         refreshData: getData,
+        sorting: {
+          type: sortByDate,
+          set: setSortByDate,
+        },
       }}
     >
       <Header />
