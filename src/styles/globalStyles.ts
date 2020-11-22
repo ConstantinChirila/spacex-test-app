@@ -53,8 +53,11 @@ export const GlobalStyle = createGlobalStyle`
   
   body {
     font-family: 'Brandon Grotesque', Arial, Helvetica, sans-serif;
-    color: ${theme.colors.secondary};
+    color: ${theme.colors.text};
     background-color: ${theme.colors.white};
     font-size: 1.6rem
+  }
+
+  *{  box-sizing: border-box;
   }
 `;
