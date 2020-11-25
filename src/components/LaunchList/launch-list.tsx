@@ -27,7 +27,6 @@ export function LaunchList(): ReactElement {
       setLunchList(copy.sort(setDescending));
     }
     if (year && year !== "all") {
-      console.log(year);
       setLunchList(
         copy.filter((a: TLaunch) => a.launchYear.toString() === year)
       );
