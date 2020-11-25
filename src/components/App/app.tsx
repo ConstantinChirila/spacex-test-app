@@ -1,27 +1,7 @@
 import React, { useState, createContext, useEffect } from "react";
 import { Header, Content } from "../index";
 import { config } from "./../../config";
-
-export type TLaunchState = {
-  isLoading: boolean;
-  data: TLaunch[];
-};
-
-export type TLaunch = {
-  flightNumber: number;
-  date: number;
-  launchYear: number;
-  missionName: string;
-  rocketName: string;
-};
-
-type TSort = "asc" | "desc";
-
-export type TContextState = {
-  launches: TLaunchState;
-  refreshData?: () => Promise<void>;
-  sorting: { set?: (type: TSort) => void; type: TSort };
-};
+import { TLaunchState, TLaunch, TOrder, TContextState } from "./app.types";
 
 export const LaunchesContext = createContext<TContextState>({
   launches: {
@@ -30,7 +10,8 @@ export const LaunchesContext = createContext<TContextState>({
   },
   refreshData: async () => {},
   sorting: {
-    type: "asc",
+    order: "asc",
+    year: "all",
   },
 });
 
@@ -40,44 +21,47 @@ export function App() {
     data: [],
   });
 
-  const [sortByDate, setSortByDate] = useState<TSort>("asc");
+  const [sortByDate, setSortByDate] = useState<TOrder>("asc");
+  const [sortByYear, setSortByYear] = useState<number | string>("all");
 
   useEffect(() => {
     getData();
   }, []);
 
-  useEffect(() => {
-    getData(sortByDate);
-  }, [sortByDate]);
-
-  async function getData(sort = "asc") {
+  async function getData() {
     setLaunches({
       isLoading: true,
       data: [],
     });
-    const response = await fetch(config.API + "/?order=" + sort);
-    const data = await response.json();
-    console.log(data);
-    const mappedData = data.map(
-      ({
-        flight_number,
-        launch_date_utc,
-        launch_year,
-        mission_name,
-        rocket,
-      }: any) => ({
-        flightNumber: flight_number,
-        date: launch_date_utc,
-        launchYear: launch_year,
-        missionName: mission_name,
-        rocketName: rocket.rocket_name,
-      })
-    ) as TLaunch[];
-
-    setLaunches({
-      isLoading: false,
-      data: mappedData,
-    });
+    try {
+      const response = await fetch(config.API);
+      const data = await response.json();
+      const mappedData = data.map(
+        ({
+          flight_number,
+          launch_date_utc,
+          launch_year,
+          mission_name,
+          rocket,
+        }: any) => ({
+          flightNumber: flight_number,
+          date: launch_date_utc,
+          launchYear: launch_year,
+          missionName: mission_name,
+          rocketName: rocket.rocket_name,
+        })
+      ) as TLaunch[];
+      setLaunches({
+        isLoading: false,
+        data: mappedData,
+      });
+    } catch (error) {
+      console.error(error);
+      setLaunches({
+        isLoading: false,
+        data: [],
+      });
+    }
   }
 
   return (
@@ -86,8 +70,10 @@ export function App() {
         launches,
         refreshData: getData,
         sorting: {
-          type: sortByDate,
-          set: setSortByDate,
+          order: sortByDate,
+          year: sortByYear,
+          setOrder: setSortByDate,
+          setYear: setSortByYear,
         },
       }}
     >
